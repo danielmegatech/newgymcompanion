@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "MasterExercise": {
+      "collection": "masterExercises",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "name": { "type": "string", "required": true },
+        "muscleGroup": { "type": "string", "required": true },
+        "equipment": { "type": "string", "required": true },
+        "loadUnit": { "type": "string", "required": true },
+        "defaultRestSeconds": { "type": "number", "required": true },
+        "instructions": { "type": "string", "required": false },
+        "mediaAttachments": { "type": "array", "required": false },
+        "machineSetup": { "type": "object", "required": false },
+        "plateTable": { "type": "array", "required": false },
+        "updatedAt": { "type": "string", "required": true }
+      }
+    },
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "name": { "type": "string", "required": true },
+        "personalData": { "type": "object", "required": false },
+        "bodyConfig": { "type": "object", "required": false },
+        "nutritionConfig": { "type": "object", "required": false },
+        "workoutPreferences": { "type": "object", "required": false },
+        "userStats": { "type": "object", "required": false },
+        "appSettings": { "type": "object", "required": false },
+        "gymConfig": { "type": "object", "required": false },
+        "updatedAt": { "type": "string", "required": true }
+      }
+    },
+    "WorkoutPlan": {
+      "collection": "workoutPlans",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "code": { "type": "string", "required": true },
+        "name": { "type": "string", "required": true },
+        "subtitle": { "type": "string", "required": false },
+        "color": { "type": "string", "required": true },
+        "description": { "type": "string", "required": false },
+        "exercises": { "type": "array", "required": true },
+        "estimatedDurationMinutes": { "type": "number", "required": false },
+        "updatedAt": { "type": "string", "required": true }
+      }
+    },
+    "WorkoutSession": {
+      "collection": "workoutSessions",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "workoutId": { "type": "string", "required": true },
+        "workoutCode": { "type": "string", "required": true },
+        "workoutName": { "type": "string", "required": true },
+        "date": { "type": "string", "required": true },
+        "durationSeconds": { "type": "number", "required": true },
+        "caloriesBurned": { "type": "number", "required": false },
+        "totalVolumeKg": { "type": "number", "required": false },
+        "exercisesCompletedCount": { "type": "number", "required": true },
+        "rating": { "type": "number", "required": false },
+        "feedbackTags": { "type": "array", "required": false },
+        "customFeedback": { "type": "string", "required": false },
+        "updatedAt": { "type": "string", "required": true }
+      }
+    }
+  }
+}

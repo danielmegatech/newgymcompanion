@@ -1,0 +1,216 @@
+/**
+ * Gym Companion v2.0 — Multi-Profile System
+ * Profiles:
+ * 1. Daniel — Perfil Principal com todo o Projeto Glow Up 2026 (Element Gyms Campo Pequeno Lisboa)
+ * 2. Teste — Perfil Secundário / Testes para novos treinos e demonstração
+ */
+
+import { UserBodyConfig, UserStats, WorkoutLog, Workout, UserProfile } from '../types';
+import { DEFAULT_WORKOUTS, DEFAULT_BADGES } from './defaultWorkouts';
+
+export type { UserProfile };
+
+export const PROFILES_STORAGE_VERSION = 'gym_companion_profiles_v3_glowup2026';
+
+export const INITIAL_PROFILES: UserProfile[] = [
+  // 1. DANIEL — PERFIL PRINCIPAL DO PROJETO GLOW UP 2026
+  {
+    id: 'daniel',
+    name: 'Daniel',
+    avatarUrl: '',
+    goal: 'Perder Gordura & Ganhar Massa (Recomposição Corporal)',
+    isDemo: false,
+    createdAt: '2026-08-01',
+    updatedAt: new Date().toISOString(),
+    personalData: {
+      birthDate: '1989-05-15',
+      locationCity: 'Lisboa',
+      locationState: 'Portugal',
+      email: 'daniel@glowup2026.app',
+      phone: '+351 912 345 678',
+    },
+    bodyConfig: {
+      weightKg: 77,
+      heightCm: 168,
+      age: 37,
+      gender: 'M',
+      goal: 'Perda de Gordura',
+      experienceLevel: 'Iniciante',
+      bodyFatPercent: 24.0,
+      muscleMassPercent: 36.0,
+      muscleMassKg: 28.5,
+      boneMassKg: 3.1,
+      bodyWaterPercent: 55.0,
+      circumferences: {
+        chestCm: 100,
+        waistCm: 96,
+        hipCm: 104,
+        armCm: 35,
+        thighCm: 50,
+        calfCm: 40,
+      },
+      measurementHistory: [
+        {
+          id: 'meas-init-daniel',
+          date: '2026-08-01',
+          weightKg: 77,
+          bodyFatPercent: 24.0,
+          muscleMassPercent: 36.0,
+          chestCm: 100,
+          waistCm: 96,
+          hipCm: 104,
+          armCm: 35,
+          thighCm: 50,
+          calfCm: 40,
+          notes: 'Avaliação inicial do Projeto Glow Up 2026.',
+        },
+      ],
+    },
+    nutritionConfig: {
+      activityFactor: 1.375,
+      targetGoal: 'Perda de Gordura',
+      proteinGramsPerKg: 1.8,
+      fatPercentOfCalories: 25,
+      customCalorieOffset: -300,
+      customProteinGrams: 135,
+      customWaterLiters: 3.0,
+    },
+    workoutPreferences: {
+      weeklyDays: 2,
+      durationMinutes: 105,
+      equipments: ['Máquinas Guiadas', 'Bicicleta Ergométrica', 'Polia', 'Pesos Livres Leves'],
+      primaryGoal: 'Perda de Gordura',
+    },
+    userStats: {
+      streak: 1,
+      level: 2,
+      xp: 450,
+      nextLevelXp: 1000,
+      totalWorkouts: 2,
+      totalHoursTrained: 3.5,
+      totalVolumeLiftedKg: 8750,
+      totalCaloriesBurned: 960,
+      consecutiveWeeks: 1,
+      unlockedBadges: DEFAULT_BADGES.map((b) => ({
+        ...b,
+        isUnlocked: b.id === 'badge-4' || b.id === 'cons-1' || b.id === 'esp-glowup2026',
+        unlockedAt: b.id === 'badge-4' || b.id === 'cons-1' || b.id === 'esp-glowup2026' ? '2026-08-11' : undefined,
+      })),
+    },
+    workoutLogs: [
+      {
+        id: 'daniel-log-treino-a',
+        workoutId: 'workout-a',
+        workoutCode: 'A',
+        workoutName: 'Treino A — Peito & Quadríceps',
+        date: '2026-08-11T18:00:00Z',
+        startTime: '18:00',
+        endTime: '19:45',
+        durationSeconds: 6300,
+        caloriesBurned: 480,
+        totalVolumeKg: 4350,
+        exercisesCompletedCount: 17,
+        newPRsCount: 1,
+        rating: 5,
+        feedbackTags: ['Execução Limpa', 'Joelho sem dor', 'Cadência Controlada 3-1-2'],
+        customFeedback: 'Sessão excelente. Leg Press executado sem nenhum desconforto no joelho.',
+        showerCompleted: true,
+        showerDurationMinutes: 10,
+      },
+      {
+        id: 'daniel-log-treino-b',
+        workoutId: 'workout-b',
+        workoutCode: 'B',
+        workoutName: 'Treino B — Costas & Posterior',
+        date: '2026-08-14T18:15:00Z',
+        startTime: '18:15',
+        endTime: '20:00',
+        durationSeconds: 6300,
+        caloriesBurned: 480,
+        totalVolumeKg: 4400,
+        exercisesCompletedCount: 18,
+        newPRsCount: 1,
+        rating: 5,
+        feedbackTags: ['Ombro Estável', 'Face Pull Excelente', 'Cardio 20 min'],
+        customFeedback: 'Treino B concluído com sucesso. Face Pull e Rotação Externa protegeram perfeitamente o ombro direito.',
+        showerCompleted: true,
+        showerDurationMinutes: 10,
+      },
+    ],
+    workouts: DEFAULT_WORKOUTS,
+  },
+
+  // 2. TESTE — PERFIL SECUNDÁRIO / TESTE
+  {
+    id: 'teste1',
+    name: 'Teste',
+    avatarUrl: '',
+    goal: 'Testes de Hipertrofia & Volume',
+    isDemo: false,
+    createdAt: '2026-08-01',
+    updatedAt: new Date().toISOString(),
+    personalData: {
+      birthDate: '1995-03-20',
+      locationCity: 'Lisboa',
+      locationState: 'Portugal',
+      email: 'teste@gymcompanion.app',
+      phone: '+351 922 888 999',
+    },
+    bodyConfig: {
+      weightKg: 78,
+      heightCm: 175,
+      age: 30,
+      gender: 'M',
+      goal: 'Hipertrofia',
+      experienceLevel: 'Intermediário',
+      bodyFatPercent: 18.0,
+      muscleMassPercent: 40.0,
+      muscleMassKg: 31.2,
+      boneMassKg: 3.2,
+      bodyWaterPercent: 58.0,
+      circumferences: {
+        chestCm: 102,
+        waistCm: 84,
+        hipCm: 98,
+        armCm: 37,
+        thighCm: 56,
+        calfCm: 38,
+      },
+    },
+    nutritionConfig: {
+      activityFactor: 1.55,
+      targetGoal: 'Ganho de Massa',
+      proteinGramsPerKg: 2.0,
+      fatPercentOfCalories: 25,
+      customCalorieOffset: 300,
+      customProteinGrams: 156,
+      customWaterLiters: 3.5,
+    },
+    workoutPreferences: {
+      weeklyDays: 3,
+      durationMinutes: 60,
+      equipments: ['Halteres', 'Barras', 'Máquinas', 'Polias'],
+      primaryGoal: 'Hipertrofia',
+    },
+    userStats: {
+      streak: 0,
+      level: 1,
+      xp: 0,
+      nextLevelXp: 500,
+      totalWorkouts: 0,
+      totalHoursTrained: 0,
+      totalVolumeLiftedKg: 0,
+      totalCaloriesBurned: 0,
+      consecutiveWeeks: 0,
+      unlockedBadges: DEFAULT_BADGES.map((b) => ({
+        ...b,
+        isUnlocked: false,
+        unlockedAt: undefined,
+      })),
+    },
+    workoutLogs: [],
+    workouts: DEFAULT_WORKOUTS,
+  },
+];
+
+export const DEMO_PROFILE = INITIAL_PROFILES[0];

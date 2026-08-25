@@ -1,0 +1,6 @@
+{
+  "name": "Gym Companion",
+  "description": "O melhor companheiro de academia possível — rápido, bonito, inteligente com AI Coach, guia de treino em tempo real, gestão de séries, descanso automático, gamificação e acesso QR Code.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

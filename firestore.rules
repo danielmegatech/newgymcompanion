@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Default deny for unmatched collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Master Exercises Library: public read-only, write allowed for app sync
+    match /masterExercises/{exerciseId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // User Data & Profiles
+    match /users/{userId} {
+      allow read, write: if true;
+
+      match /{subcollection=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // Workout Plans (Treinos A, B, C, D)
+    match /workoutPlans/{workoutId} {
+      allow read, write: if true;
+    }
+
+    // Completed Workout Sessions & Logs
+    match /workoutSessions/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // Active Live Workout Sessions
+    match /activeSessions/{userId} {
+      allow read, write: if true;
+    }
+
+    // Exercise Presets & Individual Profiles
+    match /exercisePresets/{presetId} {
+      allow read, write: if true;
+    }
+
+    // Body Metrics & Measurements
+    match /bodyMetrics/{metricId} {
+      allow read, write: if true;
+    }
+
+    // Sync Metadata & Heartbeat
+    match /syncMetadata/{metaId} {
+      allow read, write: if true;
+    }
+  }
+}
+
+
