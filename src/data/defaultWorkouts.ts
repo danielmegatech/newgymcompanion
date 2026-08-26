@@ -1,7 +1,17 @@
 /**
  * Gym Companion v2.0 — Default Workouts & Workouts Prescription
- * As Fichas de Treino (Treinos A, B, C, D) utilizam os exercícios cadastrados na Biblioteca Mestre.
- * Cada exercício possui sua prescrição específica (séries, repetições, carga prescrita).
+ * Ficha ABCD Personalizada — Daniel (Projeto Glow Up 2026)
+ *
+ * Estrutura:
+ * - Treino A: Full Body 1 (Peito + Quadríceps) ⭐ PROGRAMA PRINCIPAL
+ * - Treino B: Full Body 2 (Costas + Posterior) ⭐ PROGRAMA PRINCIPAL
+ * - Treino C: Superior (Peito + Costas + Braços) — Opcional (quando treinar 3–4x/semana)
+ * - Treino D: Inferior + Cardio (Pernas + Glúteos + Panturrilha + Core) — Opcional (quando treinar 4x/semana)
+ *
+ * Princípios Clínicos:
+ * - A e B são Full Body para manter frequência muscular 2x/semana para peito, costas, pernas e braços.
+ * - Proteção ativa para joelho direito e ombro direito (dor zero é meta).
+ * - Cargas iniciais de referência para técnica impecável.
  */
 
 import { Workout, Badge, Exercise } from '../types';
@@ -19,6 +29,10 @@ export function createWorkoutExercise(
     notes?: string;
     isTimedCardio?: boolean;
     targetDurationSeconds?: number;
+    cadence?: string;
+    kneeWarning?: boolean;
+    shoulderWarning?: boolean;
+    substitutes?: string;
   }
 ): Exercise {
   const master = getMasterExerciseById(masterId) || getMasterExerciseByName(masterId);
@@ -48,6 +62,8 @@ export function createWorkoutExercise(
     notes: prescription.notes || master?.instructions,
     isTimedCardio: prescription.isTimedCardio,
     targetDurationSeconds: prescription.targetDurationSeconds,
+    kneeWarning: prescription.kneeWarning ?? master?.kneeWarning ?? false,
+    shoulderWarning: prescription.shoulderWarning ?? master?.shoulderWarning ?? false,
     personalRecordKg: prescription.weightKg,
     history: [],
     photoUrl: primaryMedia?.url || master?.photoUrl || '',
@@ -58,14 +74,14 @@ export function createWorkoutExercise(
   };
 }
 
-// ==========================================
-// TREINO A — Full Body (Ênfase Peito + Quadríceps)
-// 17 Exercícios Canônicos Estritamente Vinculados ao Banco Global
-// ==========================================
+// =========================================================================
+// 🔴 TREINO A — FULL BODY 1 (Ênfase Peito + Quadríceps) ⭐ PRINCIPAL
+// Duração: 70–85 min (incluindo aquecimento e cardio final)
+// =========================================================================
 export const DEFAULT_EXERCISES_A: Exercise[] = [
-  // 1. Aquecimento Bike 10 min
+  // 1. 🚴 Bike (Aquecimento) — 10 min
   createWorkoutExercise('master-bike-ergometrica', {
-    weightKg: 4,
+    weightKg: 0,
     reps: 1,
     sets: 1,
     targetReps: '10 min',
@@ -73,162 +89,160 @@ export const DEFAULT_EXERCISES_A: Exercise[] = [
     targetDurationSeconds: 600,
     defaultRestSeconds: 60,
     rpe: 6,
-    notes: 'Cadência 80–90 RPM. Objetivo: aquecer articulações e elevar temperatura corporal.',
+    notes:
+      '🚴 Como fazer: Pedalar progressivamente, começando leve e aumentando a resistência aos poucos. ❌ Evitar: Começar forte, ficar exausto antes da musculação ou pedalar muito rápido sem resistência.',
   }),
 
-  // 2. Leg Press 45°
+  // 2. Leg Press 45° (English: 45° Leg Press, Máquina: Leg Press 45°)
   createWorkoutExercise('master-leg-press-45', {
-    weightKg: 80,
+    weightKg: 40,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 90,
     rpe: 7,
-    notes: '⚠️ ATENÇÃO JOELHO DIREITO: Evitar impactos e cargas excessivas. Não travar os joelhos no topo.',
+    kneeWarning: true,
+    notes:
+      'Como fazer: Sentar com costas e lombar 100% apoiadas; pés na largura dos ombros no meio da plataforma; destravar com segurança; flexionar os joelhos até ~90° com cadência 3–1–2; empurrar com os calcanhares sem travar os joelhos no final. Deve sentir: Quadríceps e glúteos. ❌ Evitar: Joelho entrando para dentro (valgo), tirar quadril do banco, descer além da amplitude confortável, movimentos rápidos, aumentar peso se o joelho inchar. ⚠️ Joelho direito: Se o joelho começar a incomodar ou apresentar inchaço anormal, não tente "vencer" a dor. Alternativa: Hack Squat Machine.',
   }),
 
-  // 3. Mesa Flexora
+  // 3. Mesa Flexora (English: Leg Curl, Máquina: Leg Curl Machine)
   createWorkoutExercise('master-mesa-flexora', {
-    weightKg: 30,
+    weightKg: 15,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 75,
     rpe: 7,
-    notes: 'Flexione os joelhos com cadência controlada. Mantenha o quadril pressionado contra a mesa.',
+    notes:
+      'Como fazer: Deitar de bruços, ajustar o apoio logo acima do calcanhar; segurar as manoplas; flexionar os joelhos trazendo o rolo para trás com cadência 2–1–3; contrair o posterior da coxa no topo; retornar lentamente. Deve sentir: Posterior da coxa. ❌ Evitar: Levantar quadril, impulso com lombar, soltar o peso rápido. Alternativa: Outra máquina de Leg Curl.',
   }),
 
-  // 4. Panturrilha Sentado
+  // 4. Panturrilha Sentado (English: Seated Calf Raise, Máquina: Seated Calf Raise)
   createWorkoutExercise('master-panturrilha-sentado', {
-    weightKg: 35,
+    weightKg: 20,
     reps: 15,
     sets: 4,
-    defaultRestSeconds: 60,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
     rpe: 7,
-    notes: 'Descida lenta alongando bem os sóleos, subida explosiva travando 1 segundo no topo.',
+    notes:
+      'Como fazer: Apoiar a almofada sobre os joelhos; calcanhar baixo no início; empurrar com a ponta dos pés até a contração máxima (cadência 2–2–2); pausar 1–2 segundos no topo; descer lentamente sentindo o alongamento. Deve sentir: Contração forte na panturrilha. ❌ Evitar: Quicar no fundo, movimentos curtíssimos, aumentar carga sacrificando amplitude.',
   }),
 
-  // 5. Cadeira Abdutora
-  createWorkoutExercise('master-abducao-maquina', {
-    weightKg: 40,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Fortalece glúteo médio e estabiliza a patela/joelho direito. Abra com controle.',
-  }),
-
-  // 6. Chest Press Máquina Sentado
+  // 5. Chest Press (English: Chest Press, Máquina: Chest Press Machine)
   createWorkoutExercise('master-chest-press-sentado', {
-    weightKg: 35,
-    reps: 12,
-    sets: 4,
+    weightKg: 20,
+    reps: 10,
+    sets: 3,
+    targetReps: '10 (Faixa: 8–10)',
     defaultRestSeconds: 90,
     rpe: 7,
-    notes: '⚠️ ATENÇÃO OMBRO DIREITO: Mantenha as escápulas aduzidas e cotovelos a 45° sem trancos.',
+    shoulderWarning: true,
+    notes:
+      'Como fazer: Ajustar o banco para as pegadas ficarem na altura do meio do peito; encostar as costas; ombros baixos e escápulas aduzidas; empurrar para a frente (cadência 2–1–3); retornar devagar; parar antes de perder a posição dos ombros. Deve sentir: Peitoral com participação de tríceps. ❌ Evitar: Ombros subindo em direção às orelhas, cotovelos exageradamente abertos, travar bruscamente cotovelos, movimento explosivo. ⚠️ Ombro direito: Qualquer dor articular relevante = parar imediatamente. Alternativa: Converging Chest Press.',
   }),
 
-  // 7. Peck Deck (Voador Peitoral)
+  // 6. Peck Deck (English: Pec Deck / Chest Fly, Máquina: Pec Deck Machine)
   createWorkoutExercise('master-peck-deck', {
-    weightKg: 30,
+    weightKg: 15,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 75,
     rpe: 7,
-    notes: 'Contração de 1 segundo juntando os apoios à frente. Não alongue além da linha dos ombros.',
+    shoulderWarning: true,
+    notes:
+      'Como fazer: Ajustar o banco; peito aberto; segurar as manoplas sem tensionar ombros; aproximar os braços contraindo o peito no centro (cadência 2–1–3); segurar 1s; retornar lentamente sem esticar além do limite seguro. Deve sentir: Peitoral. ❌ Evitar: Abrir excessivamente os braços além da linha do corpo, esticar ombro até sentir dor, bater placas, usar impulso. Alternativa: Cable Chest Fly com amplitude reduzida.',
   }),
 
-  // 8. Puxada Alta Frente
+  // 7. Puxada Frontal (English: Lat Pulldown, Máquina: Lat Pulldown)
   createWorkoutExercise('master-puxada-alta-frente', {
-    weightKg: 40,
+    weightKg: 25,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 90,
     rpe: 7,
-    notes: 'Puxe em direção à clavícula conduzindo com os cotovelos. Evite puxar atrás da cabeça.',
+    notes:
+      'Como fazer: Segurar a barra além da largura dos ombros; travar as pernas nos rolos; inclinar o tronco ligeiramente para trás (~10–15°); puxar a barra em direção ao peito superior trazendo cotovelos para baixo (cadência 2–1–3); subir lentamente. Deve sentir: Dorsais e parte superior das costas. ❌ Evitar: Puxar atrás da cabeça/nuca, balançar o corpo, transformar em remada. Alternativa: Assisted Pull-Up.',
   }),
 
-  // 9. Remada Articulada Sentada
+  // 8. Remada Sentada (English: Seated Cable Row, Máquina: Seated Row)
   createWorkoutExercise('master-remada-articulada-sentada', {
-    weightKg: 35,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-    rpe: 7,
-    notes: 'Mantenha o peito estufado e contraia as escápulas no final do movimento para postura.',
-  }),
-
-  // 10. Rosca Scott Máquina
-  createWorkoutExercise('master-rosca-scott-maquina', {
     weightKg: 20,
     reps: 12,
     sets: 3,
-    defaultRestSeconds: 60,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
     rpe: 7,
-    notes: 'Isolamento seguro de bíceps sem sobrecarregar tendões do ombro ou cotovelo.',
+    notes:
+      'Como fazer: Sentar com a coluna neutra e peito aberto; puxar a pega em direção ao abdômen com cotovelos para trás (cadência 2–1–3); pausar 1s esmagando as escápulas; retornar lentamente estendendo os braços. Deve sentir: Costas, principalmente região média. ❌ Evitar: Arredondar a lombar, jogar o tronco violentamente para trás, puxar só com braços. Alternativa: Machine Row.',
   }),
 
-  // 11. Tríceps Corda no Cabo
-  createWorkoutExercise('master-triceps-corda', {
-    weightKg: 25,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Abra a corda na parte inferior travando os cotovelos próximos ao tronco.',
-  }),
-
-  // 12. Flexão de Punhos
-  createWorkoutExercise('master-flexao-punhos', {
+  // 9. Rosca Máquina (English: Machine Biceps Curl)
+  createWorkoutExercise('master-machine-biceps-curl', {
     weightKg: 10,
-    reps: 15,
-    sets: 3,
-    defaultRestSeconds: 45,
-    rpe: 7,
-    notes: 'Apoie os antebraços nos joelhos ou banco e flexione os punhos para fortalecimento.',
-  }),
-
-  // 13. Extensão de Punhos
-  createWorkoutExercise('master-extensao-punhos', {
-    weightKg: 8,
-    reps: 15,
-    sets: 3,
-    defaultRestSeconds: 45,
-    rpe: 7,
-    notes: 'Extensão controlada para equilíbrio muscular do antebraço e prevenção de epicondilite.',
-  }),
-
-  // 14. Abdominal Máquina
-  createWorkoutExercise('master-abdominal-maquina', {
-    weightKg: 30,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Flexione o tronco com a força abdominal sem puxar com os braços ou pescoço.',
-  }),
-
-  // 15. Elevação de Joelhos
-  createWorkoutExercise('master-knee-raise-captain-chair', {
-    weightKg: 0,
     reps: 12,
     sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: 'Eleve os joelhos em direção ao peito com controle. Ótimo para parte inferior do abdômen.',
+    notes:
+      'Como fazer: Braços apoiados no estofado; movimento lento e controlado sem levantar o ombro do apoio; contrair o bíceps no topo; retornar sem soltar o peso. ❌ Evitar: Usar o corpo para ajudar, balançar o tronco. Alternativa: Cable Curl na polia baixa.',
   }),
 
-  // 16. Cable Crunch
-  createWorkoutExercise('master-cable-crunch', {
-    weightKg: 35,
-    reps: 15,
-    sets: 4,
+  // 10. Tríceps Corda (English: Rope Triceps Pushdown, Máquina: Cable Machine)
+  createWorkoutExercise('master-triceps-corda', {
+    weightKg: 10,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: 'Ajoelhado, enrole o tronco para baixo usando a contração do abdômen.',
+    notes:
+      'Como fazer: Pegada neutra na corda; cotovelos colados e próximos ao corpo; estender os braços abrindo as pontas da corda na descida sem movimentar excessivamente os ombros; retornar até ~90° com controle. ❌ Evitar: Abrir os cotovelos para fora, balançar o corpo. Alternativa: Straight-Bar Triceps Pushdown.',
   }),
 
-  // 17. Bike Cardio Pós-Treino 20 min
-  createWorkoutExercise('master-bike-ergometrica', {
+  // 11. Flexão de Punhos (English: Wrist Curl)
+  createWorkoutExercise('master-flexao-punhos', {
     weightKg: 5,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    rpe: 7,
+    notes:
+      'Como fazer: Antebraços apoiados sobre as coxas ou banco, palmas para cima; flexionar os punhos para cima de forma lenta e controlada; descer na amplitude total. 💡 Regra: Controle e amplitude, não carga alta.',
+  }),
+
+  // 12. Extensão de Punhos (English: Reverse Wrist Curl)
+  createWorkoutExercise('master-extensao-punhos', {
+    weightKg: 4,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    rpe: 7,
+    notes:
+      'Como fazer: Antebraços apoiados, palmas para baixo; estender os punhos para cima controlando o movimento; descer devagar. 💡 Regra: Fortalecimento e proteção dos extensores do antebraço.',
+  }),
+
+  // 13. Abdominal Máquina (English: Abdominal Crunch Machine)
+  createWorkoutExercise('master-abdominal-maquina', {
+    weightKg: 15,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    rpe: 7,
+    notes:
+      'Como fazer: Sentar com as costas no encosto; segurar as manoplas; flexionar o tronco enrolando o abdômen; soltar o ar na contração máxima; retornar devagar sem bater as placas. ❌ Evitar: Puxar com o pescoço ou braços, movimentos rápidos.',
+  }),
+
+  // 14. 🚴 Bike (Cardio Final) — 20 min
+  createWorkoutExercise('master-bike-ergometrica', {
+    weightKg: 0,
     reps: 1,
     sets: 1,
     targetReps: '20 min',
@@ -236,18 +250,19 @@ export const DEFAULT_EXERCISES_A: Exercise[] = [
     targetDurationSeconds: 1200,
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: '20 minutos de cardio aeróbico para queima de gordura e recuperação ativa. Hidrate-se bem.',
+    notes:
+      '🚴 Cardio contínuo de 20 minutos em intensidade leve/moderada para queima de gordura e condicionamento cardiovascular. Ao terminar: 5 min de desaquecimento e relaxamento com alongamento leve opcional.',
   }),
 ];
 
-// ==========================================
-// TREINO B — Full Body (Ênfase Costas + Posterior)
-// 18 Exercícios Canônicos Estritamente Vinculados ao Banco Global
-// ==========================================
+// =========================================================================
+// 🔵 TREINO B — FULL BODY 2 (Ênfase Costas + Posterior) ⭐ PRINCIPAL
+// Duração: 70–85 min (incluindo aquecimento, ombro e cardio final)
+// =========================================================================
 export const DEFAULT_EXERCISES_B: Exercise[] = [
-  // 1. Aquecimento Bike 10 min
+  // 1. 🚴 Bike (Aquecimento) — 10 min
   createWorkoutExercise('master-bike-ergometrica', {
-    weightKg: 4,
+    weightKg: 0,
     reps: 1,
     sets: 1,
     targetReps: '10 min',
@@ -255,174 +270,197 @@ export const DEFAULT_EXERCISES_B: Exercise[] = [
     targetDurationSeconds: 600,
     defaultRestSeconds: 60,
     rpe: 6,
-    notes: 'Cadência 80–90 RPM. Aquecer articulações e preparar joelho e ombro para a sessão.',
+    notes:
+      '10 min de aquecimento na bike para lubrificar articulações de joelho, quadril e elevar temperatura corporal com segurança.',
   }),
 
-  // 2. Cadeira Extensora
+  // 2. Cadeira Extensora (English: Leg Extension, Máquina: Leg Extension Machine)
   createWorkoutExercise('master-leg-extension', {
-    weightKg: 30,
+    weightKg: 15,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 75,
     rpe: 7,
-    notes: '⚠️ ATENÇÃO JOELHO DIREITO: Evitar impactos e cargas excessivas. Estenda sem dar tranco no topo.',
+    kneeWarning: true,
+    notes:
+      'Como fazer: Rolo ajustado na parte inferior da canela; estender o joelho lentamente com cadência 2–1–3; pausar 1s no topo; descer controladamente em 3s. Deve sentir: Quadríceps. ❌ Evitar: Chutar a carga, movimento explosivo com tranco articular. ⚠️ Joelho direito: Aumentar carga apenas se houver zero desconforto. Alternativa: Leg Press com carga menor.',
   }),
 
-  // 3. Cadeira Flexora
-  createWorkoutExercise('master-leg-curl-seated', {
-    weightKg: 35,
+  // 3. Mesa Flexora (English: Leg Curl, Máquina: Leg Curl Machine)
+  createWorkoutExercise('master-mesa-flexora', {
+    weightKg: 20,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 75,
     rpe: 7,
-    notes: 'Trabalho focado no posterior da coxa, fortalecendo a estabilidade posterior do joelho.',
+    notes:
+      'Como fazer: Mesma técnica rigorosa do Treino A, com 20 kg de referência. Pressionar a pelve contra a mesa, puxar calcanhares para os glúteos e segurar a descida em 3 segundos.',
   }),
 
-  // 4. Panturrilha no Leg Press
-  createWorkoutExercise('master-calf-leg-press', {
-    weightKg: 60,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Apoio na ponta dos pés na borda da plataforma. Movimento lento e amplitude total.',
-  }),
-
-  // 5. Cadeira Adutora
-  createWorkoutExercise('master-adutora-maquina', {
-    weightKg: 40,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Fortalecimento dos adutores para alinhamento e suporte medial da articulação do joelho.',
-  }),
-
-  // 6. Puxada Triângulo / Fechada
-  createWorkoutExercise('master-puxada-triangulo', {
-    weightKg: 35,
+  // 4. Hip Thrust Máquina (English: Machine Hip Thrust, Máquina: Hip Thrust / Glute Drive)
+  createWorkoutExercise('master-hip-thrust-machine', {
+    weightKg: 20,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 90,
     rpe: 7,
-    notes: 'Puxe verticalmente até o peito com pegada neutra e cotovelos fechados.',
+    notes:
+      'Como fazer: Apoiar a parte superior das costas; pés firmes no solo na largura do quadril; empurrar com força pelos calcanhares; elevar o quadril; contrair fortemente os glúteos 1s no topo; descer com cadência 2–1–2 controlada. ❌ Evitar: Hiperestender a lombar no topo, jogar o peso, aumentar peso sacrificando a posição.',
   }),
 
-  // 7. Remada Baixa no Cabo
-  createWorkoutExercise('master-remada-baixa-cabo', {
-    weightKg: 35,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-    rpe: 7,
-    notes: 'Puxe em direção ao abdômen mantendo a coluna ereta e junte as escápulas.',
-  }),
-
-  // 8. Supino Inclinado Máquina
-  createWorkoutExercise('master-incline-chest-press', {
-    weightKg: 30,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-    rpe: 7,
-    notes: 'Foco na porção superior do peitoral com segurança e controle escapular.',
-  }),
-
-  // 9. Peck Deck (Voador Peitoral)
-  createWorkoutExercise('master-peck-deck', {
-    weightKg: 30,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-    rpe: 7,
-    notes: 'Aperto central no peito mantendo a articulação do ombro estável.',
-  }),
-
-  // 10. Elevação Lateral no Cabo
-  createWorkoutExercise('master-elevacao-lateral-cabo', {
-    weightKg: 6,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 60,
-    rpe: 7,
-    notes: 'Tensão constante em todo o arco lateral do ombro sem forçar a articulação.',
-  }),
-
-  // 11. Face Pull no Cabo
-  createWorkoutExercise('master-face-pull', {
+  // 5. Panturrilha em Pé (English: Standing Calf Raise)
+  createWorkoutExercise('master-standing-calf-raise', {
     weightKg: 20,
     reps: 15,
     sets: 4,
-    defaultRestSeconds: 60,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
     rpe: 7,
-    notes: '⚠️ EXERCÍCIO CHAVE: Reabilitação e fortalecimento do ombro direito. Puxe em direção ao rosto.',
+    notes:
+      'Como fazer: Na máquina de panturrilha em pé ou smith com 20 kg. Ponta dos pés no apoio, joelhos estendidos sem travar; descer para alongar bem; subir até a contração máxima na ponta dos pés; pausar 2s no topo (cadência 2–2–2) e descer devagar.',
   }),
 
-  // 12. Rotação Externa no Cabo / Elástico
-  createWorkoutExercise('master-rotacao-externa-cabo', {
-    weightKg: 4,
+  // 6. Adução (English: Hip Adduction, Máquina: Hip Adductor)
+  createWorkoutExercise('master-adutora-maquina', {
+    weightKg: 20,
     reps: 15,
     sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
     defaultRestSeconds: 45,
-    rpe: 6,
-    notes: '⚠️ REABILITAÇÃO DO OMBRO DIREITO: Fortalece o manguito rotador sem forçar a articulação.',
+    rpe: 7,
+    notes:
+      'Como fazer: Sentar com as costas no encosto, almofadas na parte interna dos joelhos; fechar as pernas com movimento lento e controlado; segurar 1s; retornar devagar sem bater as placas. Fortalece a estabilidade medial do joelho.',
   }),
 
-  // 13. Rosca Martelo com Halteres
+  // 7. Chest Press Inclinado (English: Incline Chest Press)
+  createWorkoutExercise('master-incline-chest-press', {
+    weightKg: 20,
+    reps: 10,
+    sets: 3,
+    targetReps: '10 (Faixa: 8–10)',
+    defaultRestSeconds: 90,
+    rpe: 7,
+    shoulderWarning: true,
+    notes:
+      'Como fazer: Ajustar o banco para alinhamento com o peitoral superior; costas no encosto; empurrar para frente/cima (cadência 2–1–3); descer devagar. ⚠️ Ombro direito: Se sentir qualquer desconforto articular no ombro direito, parar imediatamente e substituir por Chest Press horizontal ou máquina convergente.',
+  }),
+
+  // 8. Pullover Máquina (English: Machine Pullover)
+  createWorkoutExercise('master-pullover-machine', {
+    weightKg: 15,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 75,
+    rpe: 7,
+    notes:
+      'Como fazer: Excelente para trabalhar dorsais e serrátil sem necessidade de pesos livres. Ajustar o assento, apoiar os cotovelos nas almofadas e puxar em arco até a altura do abdômen (cadência 2–1–3). ❌ Evitar: Forçar amplitude excessiva do ombro no topo, acelerar o retorno. Alternativa: Straight-Arm Pulldown na polia.',
+  }),
+
+  // 9. Remada Máquina (English: Machine Row)
+  createWorkoutExercise('master-remada-articulada-sentada', {
+    weightKg: 20,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
+    rpe: 7,
+    notes:
+      'Como fazer: Peito encostado na almofada frontal; puxar as pegadas com força das costas; contrair as escápulas atrás; segurar 1s (cadência 2–1–3); estender os braços devagar com controle.',
+  }),
+
+  // 10. Face Pull (English: Face Pull, Máquina: Cable Machine)
+  createWorkoutExercise('master-face-pull', {
+    weightKg: 5,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 60,
+    rpe: 6,
+    shoulderWarning: true,
+    notes:
+      '⚠️ EXERCÍCIO CHAVE PROTEÇÃO DE OMBRO: Carga 5–7,5 kg (padrão 5 kg). Polia na altura dos olhos. Puxar a corda em direção aos olhos/testa com rotação externa, mantendo cotovelos altos; movimento controlado (cadência 2–1–2). ❌ Evitar: Carga alta demais, impulso, dor.',
+  }),
+
+  // 11. Rotação Externa (English: Cable External Rotation)
+  createWorkoutExercise('master-rotacao-externa-cabo', {
+    weightKg: 2.5,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    rpe: 6,
+    shoulderWarning: true,
+    notes:
+      '⚠️ REABILITAÇÃO DO MANGUITO: Carga 2,5–5 kg (padrão 2.5 kg). Cotovelo colado à costela a 90°. Girar o antebraço para fora de forma estritamente controlada; retornar devagar. 💡 Prioridade: Qualidade do movimento e controle articular, nunca força.',
+  }),
+
+  // 12. Rosca Martelo na Corda (English: Rope Hammer Curl)
   createWorkoutExercise('master-rosca-martelo', {
     weightKg: 10,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: 'Pegada neutra para proteção de punhos e ativação forte de braquial e antebraço.',
+    notes:
+      'Como fazer: Polia baixa com corda, pegada neutra; flexionar os cotovelos trazendo a corda em direção aos ombros; manter cotovelos fixos ao lado do corpo; descer com controle (cadência 2–1–2).',
   }),
 
-  // 14. Tríceps Testa na Polia
-  createWorkoutExercise('master-triceps-testa-polia', {
-    weightKg: 18,
+  // 13. Tríceps Barra (English: Straight-Bar Triceps Pushdown)
+  createWorkoutExercise('master-triceps-barra', {
+    weightKg: 10,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: 'Extensão controlada para cabeça longa do tríceps.',
+    notes:
+      'Como fazer: Polia alta com barra reta, pegada pronada; cotovelos colados ao tronco; empurrar a barra para baixo até estender totalmente os braços; retornar até ~90° com controle.',
   }),
 
-  // 15. Prancha Abdominal Frontal
-  createWorkoutExercise('master-prancha-frontal', {
-    weightKg: 0,
-    reps: 45,
+  // 14. Abdominal Máquina (English: Abdominal Crunch Machine)
+  createWorkoutExercise('master-abdominal-maquina', {
+    weightKg: 20,
+    reps: 15,
     sets: 3,
-    targetReps: '45 seg',
+    targetReps: '15 (Faixa: 12–15)',
     defaultRestSeconds: 45,
     rpe: 7,
-    notes: 'Sustentação isométrica do core com abdômen e glúteos travados.',
+    notes:
+      'Como fazer: Carga ajustada para 20 kg; flexionar o tronco com a musculatura abdominal; soltar o ar na contração máxima; retornar de forma controlada.',
   }),
 
-  // 16. Prancha Lateral
-  createWorkoutExercise('master-prancha-lateral', {
-    weightKg: 0,
-    reps: 30,
+  // 15. Oblíquo na Polia (English: Cable Oblique Crunch)
+  createWorkoutExercise('master-obliquo-polia', {
+    weightKg: 10,
+    reps: 12,
     sets: 3,
-    targetReps: '30 seg/lado',
+    targetReps: '12 cada lado',
     defaultRestSeconds: 45,
     rpe: 7,
-    notes: 'Estabilização lateral de coluna e oblíquos.',
+    notes:
+      'Como fazer: Polia média/alta com manopla unilateral; flexão lateral do tronco com foco na contração dos oblíquos; 12 repetições por lado com movimento estritamente controlado.',
   }),
 
-  // 17. Mobilidade de Ombro
-  createWorkoutExercise('master-mobilidade-ombro', {
+  // 16. Crunch Inclinado (English: Incline Crunch)
+  createWorkoutExercise('master-incline-crunch', {
     weightKg: 0,
-    reps: 10,
+    reps: 15,
     sets: 3,
-    defaultRestSeconds: 30,
-    rpe: 5,
-    notes: 'Trabalho de flexibilidade preventiva com bastão ou elástico.',
+    targetReps: '15 (Peso Corporal)',
+    defaultRestSeconds: 45,
+    rpe: 7,
+    notes:
+      'Como fazer: Banco inclinado com pés travados; enrole o tronco aproximando as costelas da bacia; mãos ao lado da cabeça sem puxar o pescoço; desça suavemente.',
   }),
 
-  // 18. Bike Cardio Pós-Treino 20 min
+  // 17. 🚴 Bike (Cardio Final) — 20 min
   createWorkoutExercise('master-bike-ergometrica', {
-    weightKg: 5,
+    weightKg: 0,
     reps: 1,
     sets: 1,
     targetReps: '20 min',
@@ -430,107 +468,221 @@ export const DEFAULT_EXERCISES_B: Exercise[] = [
     targetDurationSeconds: 1200,
     defaultRestSeconds: 60,
     rpe: 7,
-    notes: '20 min finais de queima calórica e saúde cardiovascular.',
+    notes:
+      '🚴 20 minutos contínuos na bike em intensidade aeróbica moderada. Ao concluir: 5 min de desaquecimento e relaxamento com alongamento opcional.',
   }),
 ];
 
-// ==========================================
-// TREINO C — Pernas & Glúteos (Opcional)
-// ==========================================
+// =========================================================================
+// 🟡 TREINO C — OPCIONAL (Superior)
+// Quando conseguir treinar 3–4 vezes na semana
+// Duração: ~60 min
+// =========================================================================
 export const DEFAULT_EXERCISES_C: Exercise[] = [
-  createWorkoutExercise('master-bike-ergometrica', {
+  // 1. Chest Press
+  createWorkoutExercise('master-chest-press-sentado', {
+    weightKg: 20,
+    reps: 10,
+    sets: 3,
+    targetReps: '10 (Faixa: 8–10)',
+    defaultRestSeconds: 90,
+    shoulderWarning: true,
+    notes: '20 kg | 3 × 10 | Descanso 90 s. Execução controlada com escápulas travadas.',
+  }),
+
+  // 2. Lat Pulldown (Puxada Frontal)
+  createWorkoutExercise('master-puxada-alta-frente', {
+    weightKg: 25,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
+    notes: '25 kg | 3 × 12 | Descanso 90 s. Puxada até a linha superior do peito.',
+  }),
+
+  // 3. Machine Row (Remada Máquina)
+  createWorkoutExercise('master-remada-articulada-sentada', {
+    weightKg: 20,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
+    notes: '20 kg | 3 × 12 | Descanso 90 s. Retração escapular no final do curso.',
+  }),
+
+  // 4. Peck Deck
+  createWorkoutExercise('master-peck-deck', {
+    weightKg: 15,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 75,
+    shoulderWarning: true,
+    notes: '15 kg | 3 × 12 | Descanso 75 s. Amplitude segura sem hiperextensão do ombro.',
+  }),
+
+  // 5. Machine Biceps Curl (Rosca Máquina)
+  createWorkoutExercise('master-machine-biceps-curl', {
+    weightKg: 10,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 60,
+    notes: '10 kg | 3 × 12 | Descanso 60 s. Isolamento de bíceps com cotovelos apoiados.',
+  }),
+
+  // 6. Rope Triceps Pushdown (Tríceps Corda)
+  createWorkoutExercise('master-triceps-corda', {
+    weightKg: 10,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 60,
+    notes: '10 kg | 3 × 12 | Descanso 60 s. Abertura da corda na parte mais baixa.',
+  }),
+
+  // 7. Face Pull
+  createWorkoutExercise('master-face-pull', {
+    weightKg: 5,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 60,
+    shoulderWarning: true,
+    notes: '5 kg | 3 × 15 | Descanso 60 s. Fortalecimento de deltoide posterior e manguito.',
+  }),
+
+  // 8. Wrist Curl (Flexão de Punhos)
+  createWorkoutExercise('master-flexao-punhos', {
+    weightKg: 5,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '5 kg | 3 × 15 | Descanso 45 s. Amplitude e cadência controlada.',
+  }),
+
+  // 9. Reverse Wrist Curl (Extensão de Punhos)
+  createWorkoutExercise('master-extensao-punhos', {
     weightKg: 4,
+    reps: 15,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '4 kg | 3 × 15 | Descanso 45 s. Fortalecimento equilibrado do antebraço.',
+  }),
+
+  // 10. Cardio: Bike 15–20 min
+  createWorkoutExercise('master-bike-ergometrica', {
+    weightKg: 0,
     reps: 1,
     sets: 1,
-    targetReps: '10 min',
+    targetReps: '20 min',
     isTimedCardio: true,
-    targetDurationSeconds: 600,
+    targetDurationSeconds: 1200,
     defaultRestSeconds: 60,
-  }),
-  createWorkoutExercise('master-leg-press-45', {
-    weightKg: 90,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 90,
-    notes: 'Progressão gradual de pernas com segurança.',
-  }),
-  createWorkoutExercise('master-leg-extension', {
-    weightKg: 35,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-  }),
-  createWorkoutExercise('master-mesa-flexora', {
-    weightKg: 35,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
-  }),
-  createWorkoutExercise('master-abducao-maquina', {
-    weightKg: 45,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-  }),
-  createWorkoutExercise('master-panturrilha-sentado', {
-    weightKg: 40,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-  }),
-  createWorkoutExercise('master-hip-thrust-machine', {
-    weightKg: 45,
-    reps: 12,
-    sets: 4,
-    defaultRestSeconds: 75,
+    notes: 'Bike 15–20 minutos em intensidade leve a moderada.',
   }),
 ];
 
-// ==========================================
-// TREINO D — Ombros, Trapézio & Abdômen (Opcional)
-// ==========================================
+// =========================================================================
+// 🟢 TREINO D — OPCIONAL (Inferior + Cardio)
+// Pernas + Glúteos + Panturrilha + Core (Quando conseguir treinar 4x na semana)
+// Duração: ~60 min
+// =========================================================================
 export const DEFAULT_EXERCISES_D: Exercise[] = [
-  createWorkoutExercise('master-shoulder-press-machine', {
-    weightKg: 25,
+  // 1. Leg Press 45°
+  createWorkoutExercise('master-leg-press-45', {
+    weightKg: 40,
     reps: 12,
-    sets: 4,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
+    kneeWarning: true,
+    notes: '40 kg | 3 × 12 | Descanso 90 s. Execução profunda sem tirar o quadril do banco.',
+  }),
+
+  // 2. Leg Extension (Cadeira Extensora)
+  createWorkoutExercise('master-leg-extension', {
+    weightKg: 15,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
     defaultRestSeconds: 75,
+    kneeWarning: true,
+    notes: '15 kg | 3 × 12 | Descanso 75 s. Extensão controlada sem trancos no joelho.',
   }),
-  createWorkoutExercise('master-lateral-raise-dumbbell', {
-    weightKg: 10,
+
+  // 3. Leg Curl (Mesa Flexora)
+  createWorkoutExercise('master-mesa-flexora', {
+    weightKg: 20,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 75,
+    notes: '20 kg | 3 × 12 | Descanso 75 s. Posterior de coxa com 20 kg de referência.',
+  }),
+
+  // 4. Hip Thrust (Máquina)
+  createWorkoutExercise('master-hip-thrust-machine', {
+    weightKg: 20,
+    reps: 12,
+    sets: 3,
+    targetReps: '12 (Faixa: 10–12)',
+    defaultRestSeconds: 90,
+    notes: '20 kg | 3 × 12 | Descanso 90 s. Contração isométrica no pico do movimento.',
+  }),
+
+  // 5. Hip Abduction (Cadeira Abdutora)
+  createWorkoutExercise('master-abducao-maquina', {
+    weightKg: 20,
     reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '20 kg | 3 × 15 | Descanso 45 s. Glúteo médio e estabilidade lateral da pelve.',
   }),
-  createWorkoutExercise('master-rear-delt-fly', {
-    weightKg: 25,
+
+  // 6. Hip Adduction (Cadeira Adutora)
+  createWorkoutExercise('master-adutora-maquina', {
+    weightKg: 20,
     reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
+    sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '20 kg | 3 × 15 | Descanso 45 s. Fortalecimento do compartimento medial da coxa.',
   }),
-  createWorkoutExercise('master-face-pull', {
+
+  // 7. Standing Calf Raise (Panturrilha em Pé)
+  createWorkoutExercise('master-standing-calf-raise', {
     weightKg: 20,
     reps: 15,
     sets: 4,
-    defaultRestSeconds: 60,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '20 kg | 4 × 15 | Descanso 45 s. Amplitude completa e pausa no topo.',
   }),
+
+  // 8. Abdominal Machine
   createWorkoutExercise('master-abdominal-maquina', {
-    weightKg: 35,
+    weightKg: 20,
     reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-  }),
-  createWorkoutExercise('master-cable-crunch', {
-    weightKg: 40,
-    reps: 15,
-    sets: 4,
-    defaultRestSeconds: 60,
-  }),
-  createWorkoutExercise('master-knee-raise-captain-chair', {
-    weightKg: 0,
-    reps: 12,
     sets: 3,
+    targetReps: '15 (Faixa: 12–15)',
+    defaultRestSeconds: 45,
+    notes: '20 kg (15–20 kg) | 3 × 15 | Descanso 45 s. Contração consciente do reto abdominal.',
+  }),
+
+  // 9. Cardio: Bike 20 min
+  createWorkoutExercise('master-bike-ergometrica', {
+    weightKg: 0,
+    reps: 1,
+    sets: 1,
+    targetReps: '20 min',
+    isTimedCardio: true,
+    targetDurationSeconds: 1200,
     defaultRestSeconds: 60,
+    notes: 'Bike 20 minutos em intensidade leve a moderada.',
   }),
 ];
 
@@ -538,50 +690,50 @@ export const DEFAULT_WORKOUTS: Workout[] = [
   {
     id: 'workout-a',
     code: 'A',
-    name: 'Treino A — Peito & Quadríceps',
-    subtitle: 'Foco em Peitoral, Joelho Protegido & Core (Glow Up 2026)',
+    name: 'Treino A — Full Body 1',
+    subtitle: '⭐ PROGRAMA PRINCIPAL — Peito + Quadríceps (Glow Up 2026)',
     color: 'emerald',
     description:
-      'Sessão completa (2x semana, 1h45–2h) com máquinas seguras para o joelho direito e aquecimento na bike.',
+      'Programa Principal: Full Body 1 garantindo que peito, costas, pernas e braços recebam estímulo com ênfase em Peito e Quadríceps. 70–85 min com aquecimento e cardio final.',
     exercises: DEFAULT_EXERCISES_A,
     isFavorite: true,
-    estimatedDurationMinutes: 105,
+    estimatedDurationMinutes: 80,
   },
   {
     id: 'workout-b',
     code: 'B',
-    name: 'Treino B — Costas & Posterior',
-    subtitle: 'Foco em Dorsal, Posterior de Coxa & Reabilitação do Ombro',
+    name: 'Treino B — Full Body 2',
+    subtitle: '⭐ PROGRAMA PRINCIPAL — Costas + Posterior & Proteção Articular',
     color: 'cyan',
     description:
-      'Puxadas e remadas articuladas, alongamento posterior e exercícios corretivos (Face Pull e Rotação Externa) para o ombro direito.',
+      'Programa Principal: Full Body 2 com foco em Dorsais, Posterior de Coxa, Glúteos e protocolo chave de proteção/reabilitação para ombro direito (Face Pull e Rotação Externa). 70–85 min.',
     exercises: DEFAULT_EXERCISES_B,
     isFavorite: true,
-    estimatedDurationMinutes: 105,
+    estimatedDurationMinutes: 80,
   },
   {
     id: 'workout-c',
     code: 'C',
-    name: 'Treino C — Pernas & Glúteos (Opcional)',
-    subtitle: 'Foco Complementar de Membros Inferiores',
+    name: 'Treino C — Superior (Opcional)',
+    subtitle: 'Sessão Opcional de Tronco & Braços (Quando treinar 3–4× na semana)',
     color: 'amber',
     description:
-      'Sessão suplementar de agachamento, leg press, posteriores e panturrilha caso evolua para frequência 3x na semana.',
+      'Sessão opcional de Peito + Costas + Braços para semanas com maior disponibilidade (3ª ou 4ª sessão semanal). ~60 min.',
     exercises: DEFAULT_EXERCISES_C,
     isFavorite: false,
-    estimatedDurationMinutes: 55,
+    estimatedDurationMinutes: 60,
   },
   {
     id: 'workout-d',
     code: 'D',
-    name: 'Treino D — Ombros, Trapézio & Abdômen (Opcional)',
-    subtitle: 'Foco Complementar de Estabilidade e Core',
+    name: 'Treino D — Inferior + Cardio (Opcional)',
+    subtitle: 'Sessão Opcional de Pernas, Glúteos, Panturrilha & Core (4× na semana)',
     color: 'violet',
     description:
-      'Desenvolvimentos e elevações para largura de ombros, somados a trabalho de core e trapézio.',
+      'Sessão opcional de Pernas + Glúteos + Panturrilha + Core e Cardio para quando você conseguir treinar 4 vezes na semana. ~60 min.',
     exercises: DEFAULT_EXERCISES_D,
     isFavorite: false,
-    estimatedDurationMinutes: 45,
+    estimatedDurationMinutes: 60,
   },
 ];
 

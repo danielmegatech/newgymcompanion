@@ -55,14 +55,14 @@ const COLLECTIONS = {
 
 // LocalStorage Keys for offline-first caching
 const CACHE_KEYS = {
-  MASTER_EXERCISES: 'gym_companion_master_exercises_v2',
-  WORKOUTS: 'gym_companion_workouts_v2_daniel_2026',
+  MASTER_EXERCISES: 'gym_companion_master_exercises_v3_abcd',
+  WORKOUTS: 'gym_companion_workouts_v4_abcd_daniel_2026',
   LOGS: 'gym_companion_logs_v1',
   STATS: 'gym_companion_stats_v1',
   BODY: 'gym_companion_body_v1',
   SETTINGS: 'gym_companion_app_settings_v1',
   GYM: 'gym_companion_gym_v1',
-  PROFILES: 'gym_companion_profiles_v3_glowup2026',
+  PROFILES: 'gym_companion_profiles_v4_abcd_daniel_2026',
   ACTIVE_PROFILE_ID: 'gym_companion_active_profile_id',
   ACTIVE_WORKOUT: 'gym_companion_active_workout_v1',
   EXERCISE_PROFILES: `gym_companion_exercise_profiles_${PRIMARY_USER_ID}`,

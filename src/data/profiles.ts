@@ -10,7 +10,7 @@ import { DEFAULT_WORKOUTS, DEFAULT_BADGES } from './defaultWorkouts';
 
 export type { UserProfile };
 
-export const PROFILES_STORAGE_VERSION = 'gym_companion_profiles_v3_glowup2026';
+export const PROFILES_STORAGE_VERSION = 'gym_companion_profiles_v4_abcd_daniel_2026';
 
 export const INITIAL_PROFILES: UserProfile[] = [
   // 1. DANIEL — PERFIL PRINCIPAL DO PROJETO GLOW UP 2026
@@ -62,7 +62,7 @@ export const INITIAL_PROFILES: UserProfile[] = [
           armCm: 35,
           thighCm: 50,
           calfCm: 40,
-          notes: 'Avaliação inicial do Projeto Glow Up 2026.',
+          notes: 'Avaliação inicial do Projeto Glow Up 2026 — Ficha ABCD Personalizada.',
         },
       ],
     },
@@ -77,8 +77,8 @@ export const INITIAL_PROFILES: UserProfile[] = [
     },
     workoutPreferences: {
       weeklyDays: 2,
-      durationMinutes: 105,
-      equipments: ['Máquinas Guiadas', 'Bicicleta Ergométrica', 'Polia', 'Pesos Livres Leves'],
+      durationMinutes: 80,
+      equipments: ['Máquinas Guiadas', 'Bicicleta Ergométrica', 'Polia', 'Halteres Leves'],
       primaryGoal: 'Perda de Gordura',
     },
     userStats: {

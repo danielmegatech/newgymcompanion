@@ -1,0 +1,17 @@
+{
+  "name": "Gym Companion • Treino & Acesso",
+  "short_name": "Gym Companion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0B",
+  "theme_color": "#0A0A0B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%230A0A0B'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%2384cc16' fill-opacity='0.15' stroke='%2384cc16' stroke-width='16'/%3E%3Cpath d='M160 256h192M200 190v132M312 190v132M140 220v72M372 220v72' stroke='%2384cc16' stroke-width='32' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

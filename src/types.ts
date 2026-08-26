@@ -220,6 +220,8 @@ export interface Exercise {
   grip?: string;
   adjustment?: string;
   bench?: string;
+  kneeWarning?: boolean;
+  shoulderWarning?: boolean;
   masterData?: MasterExercise;
   individualProfile?: ExerciseIndividualProfile;
 }

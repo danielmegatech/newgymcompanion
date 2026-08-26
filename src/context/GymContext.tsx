@@ -6,6 +6,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import {
   Workout,
   Exercise,
+  MuscleGroup,
   WorkoutLog,
   UserStats,
   Badge,
@@ -81,6 +82,10 @@ interface GymContextType {
   createWorkout: (workout: Workout) => void;
   deleteWorkout: (id: string) => void;
   duplicateWorkout: (id: string) => void;
+  addExerciseToWorkout: (
+    workoutId: string,
+    exerciseData: Partial<Exercise> & { name: string; muscleGroup: MuscleGroup }
+  ) => void;
 
   // Today's suggested workout
   todayWorkout: Workout;
@@ -202,13 +207,13 @@ interface GymContextType {
 
 const GymContext = createContext<GymContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY_WORKOUTS = 'gym_companion_workouts_v2_daniel_2026';
+const LOCAL_STORAGE_KEY_WORKOUTS = 'gym_companion_workouts_v4_abcd_daniel_2026';
 const LOCAL_STORAGE_KEY_LOGS = 'gym_companion_logs_v1';
 const LOCAL_STORAGE_KEY_STATS = 'gym_companion_stats_v1';
 const LOCAL_STORAGE_KEY_BODY = 'gym_companion_body_v1';
 const LOCAL_STORAGE_KEY_GYM = 'gym_companion_gym_v1';
 const LOCAL_STORAGE_KEY_THEME = 'gym_companion_theme_v1';
-const LOCAL_STORAGE_KEY_PROFILES = 'gym_companion_profiles_v2.5_glowup2026';
+const LOCAL_STORAGE_KEY_PROFILES = 'gym_companion_profiles_v4_abcd_daniel_2026';
 
 export const getCustomMediaMap = (): Record<string, Partial<Exercise>> => {
   try {
@@ -2263,6 +2268,65 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const addExerciseToWorkout = (
+    workoutId: string,
+    exerciseData: Partial<Exercise> & { name: string; muscleGroup: MuscleGroup }
+  ) => {
+    const targetWorkout = workouts.find((w) => w.id === workoutId);
+    if (!targetWorkout) return;
+
+    const newExercise: Exercise = {
+      id: exerciseData.id || `ex-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      name: exerciseData.name,
+      muscleGroup: exerciseData.muscleGroup,
+      equipment: exerciseData.equipment || 'Máquina / Halter',
+      weightKg: exerciseData.weightKg ?? 20,
+      previousWeightKg: exerciseData.previousWeightKg ?? exerciseData.weightKg ?? 20,
+      suggestedWeightKg: exerciseData.suggestedWeightKg ?? exerciseData.weightKg ?? 20,
+      reps: exerciseData.reps ?? (typeof exerciseData.targetReps === 'number' ? (exerciseData.targetReps as unknown as number) : 10),
+      targetReps: typeof exerciseData.targetReps === 'string' ? exerciseData.targetReps : `${exerciseData.targetReps || 10} reps`,
+      targetSets: exerciseData.targetSets || 3,
+      sets: exerciseData.targetSets || 3,
+      rpe: exerciseData.rpe ?? 8,
+      defaultRestSeconds: exerciseData.defaultRestSeconds ?? 60,
+      personalRecordKg: exerciseData.personalRecordKg ?? exerciseData.weightKg ?? 20,
+      notes: exerciseData.notes || '',
+      history: exerciseData.history || [],
+      photoUrl: exerciseData.photoUrl || '',
+      gifUrl: exerciseData.gifUrl || '',
+      videoUrl: exerciseData.videoUrl || '',
+      anatomyUrl: exerciseData.anatomyUrl || '',
+      kneeWarning: exerciseData.kneeWarning,
+      shoulderWarning: exerciseData.shoulderWarning,
+      masterExerciseId: exerciseData.masterExerciseId,
+      mediaAttachments: exerciseData.mediaAttachments,
+      machineSetup: exerciseData.machineSetup,
+      plateTable: exerciseData.plateTable,
+      loadUnit: exerciseData.loadUnit || 'kg',
+      ...exerciseData,
+    };
+
+    const updatedWorkout: Workout = {
+      ...targetWorkout,
+      exercises: [...(targetWorkout.exercises || []), newExercise],
+    };
+
+    updateWorkout(updatedWorkout);
+
+    // If this workout is currently active in session, update activeWorkout queue as well
+    setActiveWorkout((prev) => {
+      if (!prev || prev.workoutId !== workoutId) return prev;
+      const updatedActive = {
+        ...prev,
+        exercisesQueue: [...prev.exercisesQueue, newExercise],
+      };
+      try {
+        localStorage.setItem('gym_companion_active_workout_v1', JSON.stringify(updatedActive));
+      } catch (_) {}
+      return updatedActive;
+    });
+  };
+
   const deleteWorkoutLog = (id: string) => {
     PersistenceService.deleteWorkoutSession(id);
     setWorkoutLogs((prevLogs) => {
@@ -2503,6 +2567,7 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         createWorkout,
         deleteWorkout,
         duplicateWorkout,
+        addExerciseToWorkout,
         todayWorkout,
         activeWorkout,
         startWorkout,

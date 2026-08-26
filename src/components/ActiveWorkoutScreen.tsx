@@ -248,38 +248,52 @@ export const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({
         </div>
       </div>
 
-      {/* CONTAINER WITH SUPERIMPOSED REST OVERLAY */}
-      <div className="relative">
-        {/* REST OVERLAY (FLOATING ON TOP WHEN REST IS ACTIVE) */}
-        {activeWorkout.restTimerActive && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl border-2 border-lime-500/60 bg-black/90 backdrop-blur-md p-4 sm:p-8 text-center space-y-3 sm:space-y-4 shadow-2xl animate-scaleUp">
-            <span className={`text-xs font-black uppercase tracking-wider block ${
+      {/* 2. SUPERIMPOSED REST OVERLAY (VIEWPORT-FITTED MODAL WHEN REST IS ACTIVE) */}
+      {activeWorkout.restTimerActive && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md overflow-y-auto animate-fadeIn">
+          <div className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-lime-500/60 bg-[#0F0F11] p-4 sm:p-6 text-center shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto space-y-3.5 sm:space-y-4 animate-scaleUp">
+            {/* Exercise context pill */}
+            <div className="flex items-center justify-between w-full border-b border-white/10 pb-3">
+              <div className="text-left">
+                <span className="text-[10px] font-black uppercase text-lime-400 tracking-wider block">
+                  Intervalo de Recuperação
+                </span>
+                <h3 className="text-sm sm:text-base font-black text-white truncate max-w-[220px] sm:max-w-xs">
+                  {currentExercise.name}
+                </h3>
+              </div>
+              <span className="rounded-xl bg-lime-500/20 px-2.5 py-1 text-xs font-black text-lime-400 border border-lime-500/30">
+                Série {setNumber}/{totalSets}
+              </span>
+            </div>
+
+            <span className={`text-xs sm:text-sm font-black uppercase tracking-wider block ${
               restSecondsRemaining === 0 ? 'text-emerald-400 animate-bounce' : 'text-lime-400'
             }`}>
               {getTimerTextStatus()}
             </span>
 
-            <div className="relative flex items-center justify-center my-1 sm:my-2">
-              {/* SVG Clock starting at 6 o'clock (rotate 90 deg) going clockwise */}
-              <svg className="w-40 h-40 sm:w-56 sm:h-56 transform rotate-90">
+            {/* SVG Circular Progress Ring Timer */}
+            <div className="relative flex items-center justify-center my-1">
+              <svg className="w-36 h-36 sm:w-44 sm:h-44 transform rotate-90" viewBox="0 0 170 170">
                 {/* Background ring */}
                 <circle
-                  cx="50%"
-                  cy="50%"
-                  r={circleRadius}
+                  cx="85"
+                  cy="85"
+                  r="70"
                   stroke="rgba(255,255,255,0.08)"
-                  strokeWidth="14"
+                  strokeWidth="10"
                   fill="transparent"
                 />
                 {/* Animated Progress Ring */}
                 <circle
-                  cx="50%"
-                  cy="50%"
-                  r={circleRadius}
+                  cx="85"
+                  cy="85"
+                  r="70"
                   stroke={getTimerColor()}
-                  strokeWidth="14"
-                  strokeDasharray={circleCircumference}
-                  strokeDashoffset={circleDashOffset}
+                  strokeWidth="10"
+                  strokeDasharray={2 * Math.PI * 70}
+                  strokeDashoffset={2 * Math.PI * 70 * (1 - restRatio)}
                   strokeLinecap="round"
                   fill="transparent"
                   className="transition-all duration-500 ease-linear"
@@ -288,20 +302,26 @@ export const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({
 
               {/* Centered Countdown */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-3xl sm:text-6xl font-black text-white font-mono tracking-tight">
+                <span className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight">
                   {restSecondsRemaining}s
                 </span>
-                <span className="text-[11px] sm:text-xs font-extrabold text-slate-300 uppercase mt-1">
-                  {restSecondsRemaining > 0 ? 'Descansando...' : 'Tempo Esgotado! Pronto!'}
+                <span className="text-[10px] sm:text-xs font-extrabold text-slate-300 uppercase mt-0.5">
+                  {restSecondsRemaining > 0 ? 'Descansando...' : 'Tempo Esgotado!'}
                 </span>
               </div>
             </div>
 
+            {/* Weight for next set */}
+            <div className="rounded-2xl bg-white/5 border border-white/10 px-4 py-2 w-full flex items-center justify-between text-xs font-bold">
+              <span className="text-slate-400">Carga da Próxima Série:</span>
+              <span className="text-sm sm:text-base font-black text-lime-400">{currentExercise.weightKg} kg</span>
+            </div>
+
             {/* Rest Action Buttons with Snooze & Confirmation */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full pt-1">
               <button
                 onClick={() => addRestTime(30)}
-                className="min-h-[48px] rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-4 sm:px-5 py-3 text-xs font-black active:scale-95 flex items-center gap-1.5"
+                className="w-full sm:w-auto flex-1 min-h-[48px] rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-4 py-3 text-xs font-black active:scale-95 flex items-center justify-center gap-1.5"
                 title="Snooze / Adicionar +30s de descanso"
               >
                 <RotateCcw className="h-4 w-4" />
@@ -310,33 +330,34 @@ export const ActiveWorkoutScreen: React.FC<ActiveWorkoutScreenProps> = ({
 
               <button
                 onClick={skipRestTime}
-                className="min-h-[48px] rounded-2xl bg-lime-500 hover:bg-lime-400 px-6 sm:px-7 py-3 text-sm font-black text-black shadow-lg shadow-lime-500/25 active:scale-95 flex items-center gap-2"
+                className="w-full sm:w-auto flex-[1.5] min-h-[52px] rounded-2xl bg-lime-500 hover:bg-lime-400 px-5 py-3.5 text-sm sm:text-base font-black text-black shadow-xl shadow-lime-500/25 active:scale-95 flex items-center justify-center gap-2"
               >
                 <CheckCircle2 className="h-5 w-5" />
                 <span>INICIAR SÉRIE</span>
               </button>
-
-              {activeWorkout.currentExerciseIndex < totalExercises - 1 && (
-                <button
-                  onClick={() => {
-                    skipRestTime();
-                    cancelCurrentExercise();
-                  }}
-                  className="min-h-[48px] rounded-2xl bg-white/10 hover:bg-white/20 px-3.5 sm:px-4 py-3 text-xs font-extrabold text-slate-200 border border-white/10 active:scale-95 flex items-center gap-1.5"
-                  title="Avançar diretamente para o próximo exercício da ficha"
-                >
-                  <SkipForward className="h-4 w-4" />
-                  <span>Próximo</span>
-                </button>
-              )}
             </div>
-          </div>
-        )}
 
-        {/* 3. CURRENT EXERCISE DISPLAY & WEIGHT ADJUSTER (FADED UNDER REST OVERLAY) */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 transition-all duration-300 ${
-          activeWorkout.restTimerActive ? 'opacity-15 pointer-events-none select-none filter blur-[2px] brightness-50' : 'opacity-100'
-        }`}>
+            {activeWorkout.currentExerciseIndex < totalExercises - 1 && (
+              <button
+                onClick={() => {
+                  skipRestTime();
+                  cancelCurrentExercise();
+                }}
+                className="w-full min-h-[42px] rounded-xl bg-white/5 hover:bg-white/10 px-3 py-2 text-xs font-extrabold text-slate-400 hover:text-white border border-white/10 active:scale-95 flex items-center justify-center gap-1.5 transition-colors"
+                title="Avançar diretamente para o próximo exercício da ficha"
+              >
+                <SkipForward className="h-4 w-4" />
+                <span>Pular para Próximo Exercício</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* CONTAINER WITH EXERCISE DISPLAY */}
+      <div className="relative">
+        {/* 3. CURRENT EXERCISE DISPLAY & WEIGHT ADJUSTER */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 transition-all duration-300">
           {/* Left Column: Media & Setup Notes */}
           <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#0F0F11] p-3.5 sm:p-5 space-y-3 sm:space-y-4 shadow-xl">
             <div className="flex items-center justify-between">

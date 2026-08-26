@@ -206,77 +206,84 @@ export const HistoryAnalyticsModal: React.FC<HistoryAnalyticsModalProps> = ({
   const maxWeightInPeriod = filteredExHistory.reduce((max, h) => Math.max(max, h.actualWeightKg), activeExObj?.weightKg || 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 overflow-y-auto backdrop-blur-md">
-      <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F11] shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-2 sm:p-4 overflow-y-auto backdrop-blur-md">
+      <div className="relative flex max-h-[94vh] sm:max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F11] shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 p-5 sm:p-6">
+        <div className="flex items-center justify-between border-b border-white/10 p-4 sm:p-6 bg-[#0A0A0B]/80 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-lime-500/10 p-2.5 text-lime-400 border border-lime-500/30">
-              <BarChart3 className="h-6 w-6" />
+            <div className="rounded-2xl bg-lime-500/10 p-2.5 sm:p-3 text-lime-400 border border-lime-500/30">
+              <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-white">
+              <h3 className="text-base sm:text-xl font-black text-white leading-tight">
                 Estatísticas & Histórico de Treino
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 hidden sm:block">
                 Acompanhe volume movimentado, progressão de carga e consistência
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-xl p-2 text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+            className="rounded-xl p-2.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            title="Fechar Janela"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-white/10 bg-[#0A0A0B]/60 px-6 pt-3 gap-2 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('charts')}
-            className={`pb-3 px-4 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
-              activeTab === 'charts'
-                ? 'border-lime-500 text-lime-400'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            📈 Gráficos & Evolução
-          </button>
-          <button
-            onClick={() => setActiveTab('calendar')}
-            className={`pb-3 px-4 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
-              activeTab === 'calendar'
-                ? 'border-lime-500 text-lime-400'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            📅 Calendário Mensal
-          </button>
-          <button
-            onClick={() => setActiveTab('logs')}
-            className={`pb-3 px-4 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
-              activeTab === 'logs'
-                ? 'border-lime-500 text-lime-400'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            📋 Histórico ({workoutLogs.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('badges')}
-            className={`pb-3 px-4 text-xs font-bold border-b-2 transition-all whitespace-nowrap ${
-              activeTab === 'badges'
-                ? 'border-lime-500 text-lime-400'
-                : 'border-transparent text-slate-400 hover:text-white'
-            }`}
-          >
-            🏆 Conquistas & XP
-          </button>
+        {/* High Visibility Touch-Friendly Tabs */}
+        <div className="border-b border-white/10 bg-[#0A0A0B] p-2 sm:p-3 shrink-0">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+            <button
+              onClick={() => setActiveTab('charts')}
+              className={`flex items-center justify-center gap-2 rounded-2xl py-3 px-3 text-xs sm:text-sm font-black transition-all min-h-[48px] active:scale-95 ${
+                activeTab === 'charts'
+                  ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5'
+              }`}
+            >
+              <span className="text-base">📈</span>
+              <span className="truncate">Gráficos</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('calendar')}
+              className={`flex items-center justify-center gap-2 rounded-2xl py-3 px-3 text-xs sm:text-sm font-black transition-all min-h-[48px] active:scale-95 ${
+                activeTab === 'calendar'
+                  ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5'
+              }`}
+            >
+              <span className="text-base">📅</span>
+              <span className="truncate">Calendário</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('logs')}
+              className={`flex items-center justify-center gap-2 rounded-2xl py-3 px-3 text-xs sm:text-sm font-black transition-all min-h-[48px] active:scale-95 ${
+                activeTab === 'logs'
+                  ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5'
+              }`}
+            >
+              <span className="text-base">📋</span>
+              <span className="truncate">Histórico ({workoutLogs.length})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('badges')}
+              className={`flex items-center justify-center gap-2 rounded-2xl py-3 px-3 text-xs sm:text-sm font-black transition-all min-h-[48px] active:scale-95 ${
+                activeTab === 'badges'
+                  ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5'
+              }`}
+            >
+              <span className="text-base">🏆</span>
+              <span className="truncate">Conquistas</span>
+            </button>
+          </div>
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
           {activeTab === 'charts' && (
             <div className="space-y-8">
               {/* Time Range Filter Bar */}
